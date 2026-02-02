@@ -1,33 +1,42 @@
-import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
-import { getHealthCheck } from "./services/api";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/authContexts";
+import { Login } from "./pages/Login/LoginPage";
+import RegisterPage from "./pages/Login/RegisterPage";
+import { OAuthCallback } from "./pages/Login/OAuthCallback";
 
-function App() {
-  const [healthStatus, setHealthStatus] = useState<string>("checking...");
-  useEffect(() => {
-    const checkHealth = async () => {
-      try {
-        const data = await getHealthCheck();
-        console.log("Health Check:", data);
-        setHealthStatus(data.status);
-      } catch (err) {
-        console.error("Health check failed:", err);
-        setHealthStatus("unhealthy");
-      }
-    };
-    checkHealth();
-  }, []);
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <>{children}</> : <Navigate to={"/login"} />;
+};
 
+const HomePage = () => {
+  const { logout } = useAuth();
   return (
     <div>
-      <div>
-        <h1>Travel Planner</h1>
-        <p>Backend Status : {healthStatus}</p>
-      </div>
+      <h1>여행 계획</h1>
+      <button onClick={logout}>로그아웃</button>
     </div>
   );
-}
+};
 
-export default App;
+export const App = () => {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<RegisterPage />} />
+          <Route path="/oauth/callback" element={<OAuthCallback />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />{" "}
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
+};

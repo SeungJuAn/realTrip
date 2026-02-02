@@ -20,7 +20,7 @@ api.interceptors.request.use(
   (error) => {
     // Handle errors
     return Promise.reject(error);
-  }
+  },
 );
 
 api.interceptors.response.use(
@@ -29,10 +29,11 @@ api.interceptors.response.use(
     // 공통 에러 처리
     if (error.response?.status === 401) {
       // TODO: 로그인 페이지로 리다이렉트
-      console.error("인증이 필요합니다.");
+      localStorage.removeItem("authToken");
+      window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 export const getHealthCheck = async () => {

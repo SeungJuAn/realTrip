@@ -20,10 +20,10 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    private String password; // null for OAuth users
+
     private String provider;
 
-    @Column(nullable = false)
     private String providerId; // 소셜 로그인 id
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
