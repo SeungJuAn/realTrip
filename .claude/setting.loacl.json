@@ -1,0 +1,6 @@
+{
+  "permissons": {
+    "allow": ["mcp__taskmaster-ai"],
+    "deny": []
+  }
+}

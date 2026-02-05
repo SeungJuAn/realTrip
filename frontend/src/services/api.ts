@@ -31,6 +31,7 @@ api.interceptors.response.use(
       // TODO: 로그인 페이지로 리다이렉트
       localStorage.removeItem("authToken");
       window.location.href = "/login";
+      console.error("인증이 필요합니다.");
     }
     return Promise.reject(error);
   },
